@@ -1,0 +1,63 @@
+# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: "2.5"
+metadata:
+  name: uk.co.brakes.rf.manageusersandrolesui
+type: application
+framework:
+  name: SAPUI5
+  version: 1.111.0
+  libraries:
+    - name: sap.m
+    - name: sap.ui.core
+    - name: sap.f
+    - name: sap.suite.ui.generic.template
+    - name: sap.ui.comp
+    - name: sap.ui.generic.app
+    - name: sap.ui.table
+    - name: sap.ushell
+    - name: themelib_sap_horizon
+server:
+  customMiddleware:
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - path: /sap
+            url: http://localhost
+          - path: /reporting
+            url: https://uas-reporting.cfapps.eu10.hana.ondemand.com
+            pathReplace: /
+            destination: usageapi_test 
+          - path: /cis_brakesdev
+            url: https://aqrl92om1.accounts.ondemand.com
+            pathReplace: /
+            destination: cloud_identity_service
+          - path: /scim_shadow_users
+            url: https://api.authentication.eu10.hana.ondemand.com/Users
+            pathReplace: /
+            destination: scim_shadow_users
+          - path: /sap_process_automation_api
+            url: https://spa-api-gateway-bpi-eu-prod.cfapps.eu10.hana.ondemand.com/workflow/rest/v1/workflow-instances
+            pathReplace: /
+            destination: sap_process_automation_api  
+          - path: /brakesgwpp
+            url: http://uk492-sapgw-dev.sysco.net:44300
+            pathReplace: /
+            destination: brakesgwpp
+          - path: /bsxcpeaexperience
+            url: https://bsx-tdd-tdd-cpea-experience-srv.cfapps.eu10.hana.ondemand.com
+            pathReplace: /
+            destination: bsxcpeaexperience    
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        component: uk.co.brakes.rf.manageusersandrolesui
+        ui5Theme: sap_horizon

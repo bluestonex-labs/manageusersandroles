@@ -1,0 +1,270 @@
+<mvc:View
+    xmlns="sap.m"
+    xmlns:l="sap.ui.layout"
+    xmlns:viz="sap.viz.ui5.controls"
+    xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
+    xmlns:viz.data="sap.viz.ui5.data"
+    xmlns:micro="sap.suite.ui.microchart"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:main="sap.ui.webc.main"
+    xmlns:core="sap.ui.core"
+    xmlns:form="sap.ui.layout.form"
+    controllerName="uk.co.brakes.rf.manageusersandrolesui.controller.MANAGE.manageUsersRoles"
+>
+    <Page showHeader="false" backgroundDesign="Solid" class="whitePage">
+        <!-- <OverflowToolbar class="transparentToolbar">
+            <Button icon="sap-icon://nav-back" press="navBack" type="Transparent" />
+            <Breadcrumbs currentLocationText="Create User" separatorStyle="{/selected}">
+                <Link text="Manage Users" press="navHome" />
+            </Breadcrumbs>
+        </OverflowToolbar> -->
+        <l:VerticalLayout id="containerLayout" width="100%">
+            <l:BlockLayout id="BlockLayout" background="Dashboard">
+                <l:BlockLayoutRow accentCells="Accent1">
+                    <l:BlockLayoutCell width="2" title="User information">
+                        <VBox width="100%" alignItems="Center">
+                            <!-- <Avatar displaySize="XL" class="sapUiMediumMarginBottom" /> -->
+                            <HBox width="100%">
+                                <VBox width="50%" class="sapUiTinyMarginEnd">
+                                    <Label text="Name" required="true" />
+                                    <Input id="sFirstNameFld" placeholder="Enter First Name" change="onFirstNameChange"/>
+                                </VBox>
+                                <VBox width="50%">
+                                    <Label />
+                                    <Input id="sLastNameFld" placeholder="Enter Last Name" change="onLastNameChange"/>
+                                </VBox>
+                            </HBox>
+
+                            <VBox width="100%" class="sapUiSmallMarginTop">
+                                <Label text="User Type" required="true" />
+                                <SegmentedButton selectedKey="blank" width="100%" selectionChange="onSelectUserType">
+                                    <items>
+                                        <SegmentedButtonItem text="Temporary" key="Temporary" />
+                                        <SegmentedButtonItem text="Permanent" key="Permanent" enabled="false"/>
+                                    </items>
+                                </SegmentedButton>
+                            </VBox>
+
+                            <!-- <VBox width="100%" class="sapUiSmallMarginTop">
+                                <Label text="User Role" required="true" />
+                                
+                                <Input enabled="false" value="RF Role" />
+                            </VBox> -->
+
+                            <VBox width="100%" class="sapUiSmallMarginTop">
+                                <Label text="Plant" required="true" />
+                                <!-- <Select width="100%" forceSelection="false" selectedKey="">
+                                    <core:Item key="PB10" text="Portbury (PB10)" />
+                                </Select> -->
+                                <ComboBox id="plantCombobox" width="100%" placeholder="Select Plant" selectionChange="onSelectPlant" items="{
+                                path: 'oPlantsModel>/'
+                            }">
+                                    <core:Item key="{oPlantsModel>Plant}" text="{oPlantsModel>Plant} - {oPlantsModel>Description}" />
+                                </ComboBox>
+                            </VBox>
+
+                            <VBox width="100%" class="sapUiSmallMarginTop">
+                                <Label text="Email" required="true" />
+                                <Input id="sEmailFld" placeholder="Enter email address" />
+                            </VBox>
+
+                            <VBox width="100%" class="sapUiSmallMarginTop">
+                                <!--<Label text="Location"/>-->
+                                <!-- <Input placeholder="Enter Location"/> -->
+                                <Label text="User name" required="true" />
+                                <Input id="sUserNameFld" placeholder="Enter user name" />
+                            </VBox>
+
+                            <!-- <VBox width="100%" class="sapUiSmallMarginTop">
+                                <Label text="User valid for"/>
+                                <Input id="sValidDays" placeholder="Enter number of days" change="onChangeValidDays"/>
+                            </VBox> -->
+
+                            <VBox width="100%" class="sapUiSmallMarginTop">
+                                <!-- <Input id="sValidTo" editable="false" placeholder="User valid until"/> -->
+                                <Label text="Contract Expiry Date" required="true" />
+                                <DatePicker id="expDate" valueFormat="yyyy-MM-dd" maxDate = "{oDateModel>/maxDate}" placeholder="Enter contract expiry date" change="expDateChange" />
+                            </VBox>
+
+                            <VBox width="100%" class="sapUiSmallMarginTop">
+                                <Label text="User Initial Password" required="true" />
+                                <Input id="sUserPasswordFld" placeholder="Enter user's initial password" change="onPasswordChange" liveChange="onPasswordLiveChange"/>
+                            </VBox> 
+
+                            <!-- <VBox width="100%" class="sapUiSmallMarginTop">
+                                <Label text="Access Information" required="true" />
+                                <HBox alignItems="Center">
+                                    <Label text="BTP Access" class="sapUiSmallMarginEnd" />
+                                    <Switch id="gwSwitch" customTextOn=" " customTextOff=" " />
+                                </HBox>
+                            </VBox> -->
+                        </VBox>
+                    </l:BlockLayoutCell>
+
+                     <l:BlockLayoutCell width="1" title="Access information">
+                        <HBox class="listButtonContainer">
+                            <!-- <List class="landscapeList" mode="SingleSelectMaster" id="btpList" selectionChange="onListSelect">
+                                <CustomListItem>
+                                    <HBox alignItems="Center">
+                                        <FlexBox width="100%" justifyContent="Center" alignItems="Center">
+                                            <Label text="BTP Access" class="sapUiSmallMarginEnd" />
+                                            <Switch id="btpSwitch" customTextOn=" " customTextOff=" " state="true" change="onBtpSwitchChange" />
+                                        </FlexBox>
+                                    </HBox>
+                                </CustomListItem>
+                            </List> -->
+
+                            <!-- <List class="landscapeList" mode="SingleSelectMaster" id="gwList" selectionChange="onListSelect">
+                                <CustomListItem>
+                                    <HBox alignItems="Center">
+                                        <FlexBox width="100%" justifyContent="Center" alignItems="Center">
+                                            <Label text="Gateway Access" class="sapUiSmallMarginEnd" />
+                                            <Switch id="gwSwitch" customTextOn=" " customTextOff=" " />
+                                        </FlexBox>
+                                    </HBox>
+                                </CustomListItem>
+                            </List>
+
+                            <List class="landscapeList" mode="SingleSelectMaster" id="erpList" selectionChange="onListSelect">
+                                <CustomListItem>
+                                    <HBox alignItems="Center">
+                                        <FlexBox width="100%" justifyContent="Center" alignItems="Center">
+                                            <Label text="ERP Access" class="sapUiSmallMarginEnd" />
+                                            <Switch id="erpSwitch" customTextOn=" " customTextOff=" " />
+                                        </FlexBox>
+                                    </HBox>
+                                </CustomListItem>
+                            </List> -->
+                        </HBox>
+                        <VBox id="accessSection" visible="true">
+                            <!-- <HBox alignItems="Center" class="sapUiSmallMarginBottom listButtonContainer2 expiryBox">
+                                <Label text="" id="rolesTitle" class="boldText blackText sapUiSmallMarginBegin sapUiMediumMarginEnd" />
+                                <Label text="Expiry Date" class="  sapUiSmallMarginBegin" required="true" />
+                                <DatePicker class="sapUiSmallMarginBegin" displayFormat="long" placeholder="Enter Date" />
+                            </HBox> -->
+
+                            <HBox>
+                                <Table mode="SingleSelectMaster" growing="true" growingThreshold="10" noDataText="Please select a role to add" class="sapUiSmallMarginEnd">
+                                    <headerToolbar>
+                                        <OverflowToolbar>
+                                            <Title text="Roles" />
+                                            <ToolbarSpacer />
+                                            <Button icon="sap-icon://add" tooltip="Add Role" enabled="false" />
+                                            <Button icon="sap-icon://less" tooltip="Remove Role" enabled="false" />
+                                            <Button icon="sap-icon://copy" tooltip="Copy from user" enabled="false"/>
+                                        </OverflowToolbar>
+                                    </headerToolbar>
+                                    <columns>
+                                        <Column width="40%">
+                                            <Text text="Role ID" />
+                                        </Column>
+                                        <Column>
+                                            <Text text="Role Description" />
+                                        </Column>
+                                    </columns>
+
+                                    <items>
+                                        <ColumnListItem>
+                                            <cells>
+                                                <!-- <Input placeholder="Enter Role ID" showValueHelp="true" />
+                                                <Input enabled="false" /> -->
+
+                                                <Select width="100%" forceSelection="false" selectedKey="RFRole">
+                                                    <core:Item key="RFRole" text="RF Role" />
+                                                </Select> 
+                                            </cells>
+                                            <cells>
+                                                <Text text="Role for RF processing"/>
+                                            </cells>
+                                        </ColumnListItem>
+                                    </items>
+                                </Table>
+
+                                <!-- <Table mode="SingleSelectMaster" growing="true" growingThreshold="10" noDataText="Please select a role to add" class="sapUiSmallMarginBegin">
+                                    <headerToolbar>
+                                        <OverflowToolbar>
+                                            <Title text="Default Parameters" />
+                                            <ToolbarSpacer />
+                                            <Button icon="sap-icon://add" tooltip="Add Parameter" />
+                                            <Button icon="sap-icon://less" tooltip="Remove Parameter" />
+                                            <Button icon="sap-icon://copy" tooltip="Copy from user" />
+                                        </OverflowToolbar>
+                                    </headerToolbar>
+                                    <columns>
+                                        <Column>
+                                            <Text text="Parameter" />
+                                        </Column>
+                                        <Column>
+                                            <Text text="Value" />
+                                        </Column>
+                                    </columns>
+
+                                    <items>
+                                        <ColumnListItem>
+                                            <cells>
+                                                <Input placeholder="Enter Parameter ID" />
+                                                <Input text="" placeholder="Enter value" />
+                                            </cells>
+                                        </ColumnListItem>
+                                        <ColumnListItem>
+                                            <cells>
+                                                <Input placeholder="Enter Parameter ID" />
+                                                <Input text="" placeholder="Enter value" />
+                                            </cells>
+                                        </ColumnListItem>
+                                        <ColumnListItem>
+                                            <cells>
+                                                <Input placeholder="Enter Parameter ID" />
+                                                <Input text="" placeholder="Enter value" />
+                                            </cells>
+                                        </ColumnListItem>
+                                        <ColumnListItem>
+                                            <cells>
+                                                <Input placeholder="Enter Parameter ID" />
+                                                <Input text="" placeholder="Enter value" />
+                                            </cells>
+                                        </ColumnListItem>
+                                    </items>
+                                </Table> -->
+                            </HBox>
+                        </VBox>
+                    </l:BlockLayoutCell> 
+                </l:BlockLayoutRow>
+                <!-- <l:BlockLayoutRow>
+                    <l:BlockLayoutCell title="Security Questions">
+                        <Table mode="SingleSelectMaster" growing="true" growingThreshold="10" noDataText="Please create a security question" class="sapUiSmallMarginEnd">
+                            <headerToolbar>
+                                <OverflowToolbar>
+                                    <ToolbarSpacer />
+                                    <Button icon="sap-icon://add" tooltip="Add Role" />
+                                    <Button icon="sap-icon://less" tooltip="Remove Role" />
+                                </OverflowToolbar>
+                            </headerToolbar>
+                            <columns>
+                                <Column width="80%">
+                                    <Text text="Security Question" />
+                                </Column>
+                                <Column>
+                                    <Text text="Status" />
+                                </Column>
+                            </columns>
+
+                            <items>
+                
+                            </items>
+                        </Table>
+                    </l:BlockLayoutCell>
+                </l:BlockLayoutRow> -->
+            </l:BlockLayout>
+            <l:content />
+        </l:VerticalLayout>
+
+        <footer>
+            <Toolbar>
+                <ToolbarSpacer />
+                <Button type="Emphasized" id="createUserBtn" text="Create User" press="onPressCreateUser" />
+                <Button text="Cancel" id="cancelCreateUserBtn" press="onCancelCreateUser" />
+            </Toolbar>
+        </footer>
+    </Page>
+</mvc:View>
