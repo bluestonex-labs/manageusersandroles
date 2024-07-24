@@ -78,7 +78,7 @@
                         </fb:FilterItem>
                     </fb:filterItems>
                 </fb:FilterBar>
-                <ScrollContainer height='25rem' vertical='true'>
+                <ScrollContainer height='75vh' vertical='true'>
                     <Table class="transparentTableHeader" id="usersTable" items="{path: 'oIdpUsersModel>/'}" growing="true" growingThreshold="100" updateStarted="onTableUpdateStarted" alternateRowColors="true">
                         <headerToolbar>
                             <OverflowToolbar>
@@ -104,17 +104,17 @@
                             </ColumnListItem>
                         </items>
                         <columns>
-                            <Column>
+                            <Column width="28%">
                                 <header>
-                                    <Label text="User Name" class="labelColor"/>
+                                    <Label text="User"  class="labelColor"/>
                                 </header>
                             </Column>
-                            <Column>
+                            <Column >
                                 <header>
                                     <Label text="User Type"/>
                                 </header>
                             </Column>
-                            <Column>
+                            <Column >
                                 <header>
                                     <Label text="Plant" />
                                 </header>
@@ -124,7 +124,7 @@
                                     <Label text="Expiry Date"/>
                                 </header>
                             </Column>
-                            <Column>
+                            <Column width="10%">
                                 <header>
                                     <Label text="User Status"/>
                                 </header>

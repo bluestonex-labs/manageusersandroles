@@ -19,58 +19,62 @@ sap.ui.define([
      */
     function (Controller, FlattenedDataset, XMLView, View, CoreLibrary, BusyIndicator, MessageBox, HorizontalLayout, VerticalLayout, mobileLibrary, FilterOperator, Filter, Fragment) {
         "use strict";
-
+        var _oController; 
 
         return Controller.extend("uk.co.brakes.rf.manageusersandrolesui.controller.MANAGE.manageUsersRoles", {
             onInit: function () {
+                 _oController = this;
                 var appId = this.getOwnerComponent().getManifestEntry("/sap.app/id");
                 var appPath = appId.replaceAll(".", "/");
                 this.appModulePath = jQuery.sap.getModulePath(appPath);
 
                 this.getOwnerComponent().getRouter().getRoute("manageUsers").attachPatternMatched(this._onManageRouteMatched, this);
 
-                //Create JSON Model for IDP users
-                var oIdpUsersModel = new sap.ui.model.json.JSONModel();
-                this.getView().setModel(oIdpUsersModel, "oIdpUsersModel");
-
-                // create json model to get the logged in user
-                //var oUserModel = new JSONModel("/services/userapi/currentUser");
-                var oUserModel = new sap.ui.model.json.JSONModel();
-                this.getView().setModel(oUserModel, "oUserModel");
-
-                var oUsrMdl = this.getOwnerComponent().getModel("userModel");
-                var oUsrMdlData = oUsrMdl.getData();
-
-                if (oUsrMdlData.decodedJWTToken) {
-                    this.oLocation = oUsrMdlData.decodedJWTToken.origin;
-                } else {
-                    this.oLocation = "";
-                }
-
-                //Create JSON Model for available plants
-                var oPlantsModel = new sap.ui.model.json.JSONModel();
-                this.getView().setModel(oPlantsModel, "oPlantsModel");
-
-                //Create JSON Model for max date
-                var maxDate = new Date();
-                maxDate.setDate(maxDate.getDate() + 45);
-                var oDateModel = new sap.ui.model.json.JSONModel({
-                    maxDate: maxDate
-                });
-                this.getView().setModel(oDateModel, "oDateModel");
-
-                this.fetchPlants();
+ 
                 //this.fetchAllIdpUsers();
 
             },
 
             onAfterRendering: function () {
+               //Create JSON Model for IDP users
+               var oIdpUsersModel = new sap.ui.model.json.JSONModel();
+               this.getView().setModel(oIdpUsersModel, "oIdpUsersModel");
 
+               // create json model to get the logged in user
+               //var oUserModel = new JSONModel("/services/userapi/currentUser");
+               var oUserModel = new sap.ui.model.json.JSONModel();
+               this.getView().setModel(oUserModel, "oUserModel");
+
+               var oUsrMdl = this.getOwnerComponent().getModel("userModel");
+               var oUsrMdlData = oUsrMdl.getData();
+
+               if (oUsrMdlData.decodedJWTToken) {
+                   this.oLocation = oUsrMdlData.decodedJWTToken.origin;
+               } else {
+                   this.oLocation = "";
+               }
+
+               //Create JSON Model for available plants
+               var oPlantsModel = new sap.ui.model.json.JSONModel();
+               this.getView().setModel(oPlantsModel, "oPlantsModel");
+
+               //Create JSON Model for max date
+               var maxDate = new Date();
+               var today = new Date();
+               maxDate.setDate(maxDate.getDate() + 45);
+               var oDateModel = new sap.ui.model.json.JSONModel({
+                   maxDate: maxDate,
+                   minDate:today
+               });
+               this.getView().setModel(oDateModel, "oDateModel");
+
+               this.fetchPlants();
             },
 
             _onManageRouteMatched: function (oEvent) {
                 this.getLoggedInUserDetails();
                 this.generateTempUserDetails();
+                this.fetchPlants();
                 this.clearInputFields();
             },
 
@@ -97,7 +101,7 @@ sap.ui.define([
                 var sFirstNameVal = this.getView().byId("sFirstNameFld").getValue();
                 var sLastNameVal = this.getView().byId("sLastNameFld").getValue();
                 if (sFirstNameVal !== "" && sLastNameVal !== "") {
-                    this.generateTempUserDetails();
+                    //this.generateTempUserDetails();
                     //this.getApproverListForLoggedInPlant("GT10");
                     //this.triggerCreateUserinSubAcctWrkFlow("sFirstName", "sLastName", "sUserName", "sEmailId", "bActive", "sValidTo", "sApproverMail", "sApproverId");
                 }
@@ -107,7 +111,7 @@ sap.ui.define([
                 var sFirstNameVal = this.getView().byId("sFirstNameFld").getValue();
                 var sLastNameVal = this.getView().byId("sLastNameFld").getValue();
                 if (sFirstNameVal !== "" && sLastNameVal !== "") {
-                    this.generateTempUserDetails();
+                    //this.generateTempUserDetails();
                 }
             },
 
@@ -115,7 +119,7 @@ sap.ui.define([
                 var sKey = oEvent.getSource().getSelectedKey();
                 if (sKey == "Temporary") {
                     BusyIndicator.show(500);
-                    this.generateTempUserDetails();
+                    //this.generateTempUserDetails();
                     /*    var sNewUserNumber = parseInt(this.sLastPUserId.replace(/^\D+/g, '')) + 1;
                         var sNewUserId = "P" + sNewUserNumber;
                         sTempEmail = sNewUserId + sTempEmailDomain;
@@ -186,6 +190,8 @@ sap.ui.define([
                     }
                 }
                 this.getApproverListForLoggedInPlant(this.sUserPlant);
+                this.getApproverListForSelectedPlant(this.sUserPlant);
+                //this.approverList = approverList;
                 BusyIndicator.hide();
             },
 
@@ -252,7 +258,7 @@ sap.ui.define([
                 this.sNewUserId = "";
                 this.sTempEmail = "";
                 this.sTempUserName = "";
-                this.sTempEmailDomain = "@brakenoemail.co.uk";
+                this.sTempEmailDomain = "@sysconoemail.co.uk";
 
                 var startIndex = this.startIndex, totalResults, itemsPerPage;
                 var that = this;
@@ -298,7 +304,7 @@ sap.ui.define([
                             that.sNewUserNumber = parseInt(that.sLastPUserId.replace(/^\D+/g, '')) + 1;
                             that.sNewUserNumber = String(that.sNewUserNumber).padStart(6, "0");
 
-                            that.sNewUserId = "P" + that.sNewUserNumber;
+                            that.sNewUserId = "TMP" + that.sNewUserNumber;
                             that.sTempEmail = that.sNewUserId + that.sTempEmailDomain;
                             that.sTempUserName = "TMP" + that.sNewUserNumber;
 
@@ -570,6 +576,13 @@ sap.ui.define([
             },
 
             createUserInIdp: function (sFirstName, sLastName, sUserName, sEmailId, sInitialPassword, sUserType, bActive, sValidTo, sPlant) {
+
+                var approverIDList = this.approverList;//this.getApproverListForSelectedPlant(plant);
+                if(approverIDList && approverIDList.length < 1){
+                    MessageBox.error("There are no approvers maintained for the selected plant. Please maintain the approver before requesting for the user.");
+                    return;
+                }
+                
                 var that = this;
 
                 /* var oPayload = {
@@ -700,7 +713,7 @@ sap.ui.define([
                             onClose: function (sAction) {
                                 if (sAction === "OK") {
                                     //that.createUserInSubaccount(sFirstName, sLastName, sUserName, sEmailId);
-                                    that.triggerCreateUserinSubAcctWrkFlow(sIdpId, sFirstName, sLastName, sUserName, sEmailId, bActive, sValidTo, this.sApproverMail, this.sApproverId);
+                                    that.triggerCreateUserinSubAcctWrkFlow(sIdpId, sFirstName, sLastName, sUserName, sEmailId, sInitialPassword, bActive, sValidTo);
                                 }
                             }
                         });
@@ -711,6 +724,11 @@ sap.ui.define([
                     }
                 }, this);
 
+            },
+            onSelectPlant:function(oEvent){
+                var plant = oEvent.getSource().getSelectedKey();
+                this.getApproverListForSelectedPlant(plant);
+                
             },
 
             getCSRFToken: function (url) {
@@ -728,8 +746,57 @@ sap.ui.define([
                 });
                 return token;
             },
+            getApproverListForSelectedPlant:function(sPlant){
+                var that = this;
+                var sDest = "/bsxcpeaexperience";
 
-            triggerCreateUserinSubAcctWrkFlow: function (sIdpId, sFirstName, sLastName, sUserName, sEmailId, bActive, sValidTo, sApproverMail, sApproverId) {
+                var filter="";
+
+
+                    if(sPlant){
+                        filter=filter+"PLANT eq '"+sPlant+"'";
+                    }
+            
+
+                var sUrl = this.appModulePath + sDest + "/cpea-experience/Approvers?$filter=" + filter;
+                $.ajax({
+                    url: sUrl,
+                    type: "GET",
+                    //contentType: "application/json",
+                    data: {
+                        $format: 'json'
+                    },
+                    success: function (oData, response) {
+                        var res = oData.value;
+                        var approverList = [];
+                        res.forEach(function (arrayItem) {
+                            approverList.push(arrayItem.APPR_ID);
+                        });
+
+                        console.log("approverlist : "+approverList);
+                        //that.getView().getModel("oApproversModel").setData(res);
+                        BusyIndicator.hide();
+                        that.approverList = approverList;
+                        if(approverList && approverList.length < 1){
+                            MessageBox.error("There are no approvers maintained for the selected plant. Please maintain the approver before requesting for the user.");
+                        }
+
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        BusyIndicator.hide();
+                        MessageBox.error("Approvers could not be fetched");
+                        return null;
+                    }
+                }, that);
+            },
+
+            getSelectedPlant:function(){
+                var plantElement = this.getView().byId("plantCombobox");
+                var selectedPlant  = plantElement.getSelectedKey();
+                return selectedPlant;
+            },
+
+            triggerCreateUserinSubAcctWrkFlow: function (sIdpId, sFirstName, sLastName, sUserName, sEmailId, sInitialPassword, bActive, sValidTo) {
                 var that = this;
                 var sCsrfToken = this.appModulePath + "/sap_process_automation_api";
                 var sDest = "/sap_process_automation_api/";
@@ -743,7 +810,7 @@ sap.ui.define([
                 var sUserType = "External";
                 /* if (bActive) {
                     sUserType = "Active"
-                } */
+                } 
 
                 var createUserPayload =
                 {
@@ -782,13 +849,21 @@ sap.ui.define([
                         "UserExpiryDate": sValidTo,
                         "UserType": sUserType
                     }
-                };
+                }; */
+
+                var plant = _oController.getSelectedPlant();
+                if(! this.approverList){
+                   this.getApproverListForSelectedPlant(plant);
+                }
+
+
 
                 var oCreateUserPayload = {
                     "createnewuserpayload": {
                         "IdpId": sIdpId,
-                        "ApproverId": "CHANDRASEKAR",
+                        "ApproverId": this.approverList,//["CHANDRASEKAR","KUMARV"],
                         "UserName": sUserName,
+                        "Password":sInitialPassword,
                         //"ApproverMail": this.sApproverMail,
                         "ApproverMail": "",
                         "UserValidFor": sUserValidFor.toString(),
@@ -978,6 +1053,7 @@ sap.ui.define([
                     success: function (oData, response) {
                         BusyIndicator.hide();
                         MessageBox.success("User has been created successfully in the subaccount");
+                        that.sendUserCreationNotificationEmail();
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
                         BusyIndicator.hide();

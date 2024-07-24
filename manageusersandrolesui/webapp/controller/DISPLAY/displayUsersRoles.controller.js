@@ -305,7 +305,7 @@ sap.ui.define([
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
                         BusyIndicator.hide();
-                        MessageBox.error("Password reset email could not be sent");
+                        MessageBox.error("Logged-in user could not be determined.");
                     }
                 }, that);
             },
@@ -324,6 +324,7 @@ sap.ui.define([
                         sIdpLocation = "/cis_bsxtdd";
                 } */
                 var url = this.appModulePath + sIdpLocation + "/scim/Users";
+                //var url = this.appModulePath + sIdpLocation + "/Users";
                 var that = this;
                 var limit = 25;
                 //BusyIndicator.show(500);
@@ -524,7 +525,11 @@ sap.ui.define([
                 var sUserName = this.getView().byId("userNameInput").getValue();
                 if (sUserName !== "") {
                     userFilter.push(new Filter("name/givenName", FilterOperator.Contains, sUserName));
+                    userFilter.push(new Filter("name/givenName", FilterOperator.Contains, sUserName.toUpperCase()));
+                    userFilter.push(new Filter("name/givenName", FilterOperator.Contains, sUserName.toLowerCase()));
                     userFilter.push(new Filter("name/familyName", FilterOperator.Contains, sUserName));
+                    userFilter.push(new Filter("name/familyName", FilterOperator.Contains, sUserName.toUpperCase()));
+                    userFilter.push(new Filter("name/familyName", FilterOperator.Contains, sUserName.toLowerCase()));
                 }
 
                 var sUserType = this.getView().byId("userTypeInput").getSelectedKey();

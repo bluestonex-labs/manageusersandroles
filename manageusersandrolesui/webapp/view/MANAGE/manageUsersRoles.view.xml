@@ -83,7 +83,7 @@
                             <VBox width="100%" class="sapUiSmallMarginTop">
                                 <!-- <Input id="sValidTo" editable="false" placeholder="User valid until"/> -->
                                 <Label text="Contract Expiry Date" required="true" />
-                                <DatePicker id="expDate" valueFormat="yyyy-MM-dd" maxDate = "{oDateModel>/maxDate}" placeholder="Enter contract expiry date" change="expDateChange" />
+                                <DatePicker id="expDate" valueFormat="yyyy-MM-dd" maxDate = "{oDateModel>/maxDate}" minDate="{oDateModel>/minDate}" placeholder="Enter contract expiry date" change="expDateChange" />
                             </VBox>
 
                             <VBox width="100%" class="sapUiSmallMarginTop">

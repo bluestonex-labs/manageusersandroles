@@ -22,7 +22,7 @@
                         "parameters": {},
                         "additionalParameters": "allowed"
                     },
-                    "semanticObject": "usersandroles",
+                    "semanticObject": "Manage_Users_and_Roles",
                     "action": "manage",
                     "title": "{{flpTitle}}",
                     "subTitle": "{{flpSubtitle}}",
@@ -50,7 +50,7 @@
     "sap.ui5": {
         "flexEnabled": true,
         "dependencies": {
-            "minUI5Version": "1.111.0",
+            "minUI5Version": "1.108.21",
             "libs": {
                 "sap.m": {},
                 "sap.ui.core": {},
